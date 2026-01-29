@@ -1,0 +1,144 @@
+:root {
+  font-family: 'Avenir Next', 'Helvetica Neue', sans-serif;
+  color: #111827;
+  background: radial-gradient(circle at top left, #fef3c7, #ffffff 40%),
+    radial-gradient(circle at bottom right, #dbeafe, #ffffff 35%);
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.grid.two {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.grid.three {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  background: #111827;
+  color: white;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.table-wrap {
+  overflow: auto;
+  max-height: 300px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+
+th, td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.badge {
+  display: inline-block;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.progress {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress > div {
+  height: 100%;
+  background: #2563eb;
+  width: 0;
+}
+
+.drag-area {
+  border: 2px dashed #9ca3af;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  background: #f9fafb;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.step-item:last-child {
+  border-bottom: none;
+}
+
+.tag {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #e0f2fe;
+  color: #0c4a6e;
+  font-size: 12px;
+}
