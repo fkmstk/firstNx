@@ -132,7 +132,7 @@ export default function StepEditor({ datasets, onAdd }: Props) {
       {type === 'filter' && (
         <div style={{ marginTop: 8 }}>
           <label>
-            条件式（例: value > 10）
+            条件式（例: value &gt; 10）
             <input value={filterExpr} onChange={(e) => setFilterExpr(e.target.value)} />
           </label>
         </div>
