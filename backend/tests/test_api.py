@@ -34,10 +34,7 @@ def upload_csv(tmp_path, header=None, rows=None, filename="sample.csv"):
     if header is None:
         header = ["time", "value", "other"]
     if rows is None:
-        rows = [
-            [f"2024-01-01T00:00:{i:02d}", i, i * 2]
-            for i in range(1, 11)
-        ]
+        rows = [[f"2024-01-01T00:00:{i:02d}", i, i * 2] for i in range(1, 11)]
     content = build_csv(header, rows)
     file_obj = io.BytesIO(content.encode("utf-8"))
     response = client.post(
