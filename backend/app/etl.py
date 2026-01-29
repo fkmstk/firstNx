@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import timedelta
 from typing import Any, Callable
 
 import polars as pl
@@ -12,7 +13,7 @@ DatasetLookup = Callable[[str], str]
 
 
 def preview_csv(path: str, limit: int) -> dict[str, Any]:
-    df = pl.scan_csv(path).limit(limit).collect(streaming=True)
+    df = pl.scan_csv(source=path).limit(limit).collect()
     return {"columns": df.columns, "rows": df.to_dicts()}
 
 
@@ -86,10 +87,10 @@ def _apply_join(
     left = current
     if step.left_id:
         left_path = dataset_lookup(step.left_id)
-        left = pl.scan_csv(left_path)
+        left = pl.scan_csv(source=left_path)
 
     right_path = dataset_lookup(step.right_id)
-    right = pl.scan_csv(right_path)
+    right = pl.scan_csv(source=right_path)
 
     left = left.with_columns(
         pl.col(step.left_time_col).cast(pl.Datetime("ms")).alias(step.left_time_col)
@@ -101,9 +102,9 @@ def _apply_join(
     left = left.sort(step.left_time_col)
     right = right.sort(step.right_time_col)
 
-    tolerance = None
+    tolerance: timedelta | None = None
     if step.tolerance_ms is not None:
-        tolerance = pl.duration(milliseconds=step.tolerance_ms)
+        tolerance = timedelta(milliseconds=step.tolerance_ms)
 
     return left.join_asof(
         right,
@@ -135,7 +136,7 @@ def run_pipeline(
     result_path: str,
     progress_cb,
 ) -> dict[str, Any]:
-    lf = pl.scan_csv(base_path)
+    lf = pl.scan_csv(source=base_path)
     total = max(len(steps), 1)
     progress_cb(0.1, "パイプラインを開始")
 
@@ -145,7 +146,7 @@ def run_pipeline(
         progress_cb(progress, f"ステップ {idx + 1}/{len(steps)} 完了")
 
     progress_cb(0.85, "結果を保存中")
-    df = lf.collect(streaming=True)
+    df = lf.collect()
     df.write_csv(result_path)
     progress_cb(0.95, "保存完了")
 

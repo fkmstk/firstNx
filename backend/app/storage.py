@@ -19,7 +19,7 @@ def ensure_data_dir() -> str:
 
 
 def _infer_schema(path: str) -> list[ColumnInfo]:
-    scan = pl.scan_csv(path)
+    scan = pl.scan_csv(source=path)
     try:
         schema = scan.collect_schema()
     except AttributeError:

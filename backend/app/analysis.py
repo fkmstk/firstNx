@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 import polars as pl
@@ -8,7 +8,7 @@ from sklearn.ensemble import IsolationForest
 
 
 def compute_correlation(path: str, columns: list[str]) -> dict[str, Any]:
-    df = pl.scan_csv(path).select(columns).collect(streaming=True)
+    df = pl.scan_csv(source=path).select(columns).collect()
     corr = df.corr()
     return {
         "columns": corr.columns,
@@ -22,14 +22,18 @@ def detect_anomalies(
     value_col: str,
     contamination: float,
 ) -> dict[str, Any]:
-    df = pl.scan_csv(path).select([time_col, value_col]).collect(streaming=True)
+    df = pl.scan_csv(source=path).select([time_col, value_col]).collect()
     pdf = df.to_pandas()
     values = pdf[value_col].to_numpy().reshape(-1, 1)
 
-    model = IsolationForest(contamination=contamination, random_state=42)
+    contamination_value = float(contamination)
+    model = IsolationForest(
+        contamination=cast(Any, contamination_value),
+        random_state=42,
+    )
     model.fit(values)
     scores = model.score_samples(values)
-    threshold = float(np.quantile(scores, contamination))
+    threshold = float(np.quantile(scores, contamination_value))
 
     points = []
     for idx, score in enumerate(scores):
