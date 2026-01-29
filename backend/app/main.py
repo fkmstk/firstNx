@@ -15,6 +15,7 @@ from .jobs import create_job, get_job, start_job
 from .models import (
     AnalysisRequest,
     AnomalyRequest,
+    DatasetMeta,
     DatasetMetaPublic,
     JobStatus,
     PipelineRunRequest,
@@ -33,6 +34,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def _to_public(meta: DatasetMeta) -> DatasetMetaPublic:
+    return DatasetMetaPublic(
+        id=meta.id,
+        filename=meta.filename,
+        row_count=meta.row_count,
+        columns=meta.columns,
+    )
+
 
 @app.get("/health")
 def health() -> dict[str, str]:
@@ -50,12 +59,12 @@ def upload_csv(file: UploadFile = File(...)) -> DatasetMetaPublic:
     path = os.path.join(settings.data_dir, stored_name)
     with open(path, "wb") as f:
         shutil.copyfileobj(file.file, f)
-    return add_dataset(filename, path)
+    return _to_public(add_dataset(filename, path))
 
 
 @app.get("/api/datasets", response_model=list[DatasetMetaPublic])
 def get_datasets() -> list[DatasetMetaPublic]:
-    return list_datasets()
+    return [_to_public(meta) for meta in list_datasets()]
 
 
 @app.get("/api/datasets/{dataset_id}/preview")
