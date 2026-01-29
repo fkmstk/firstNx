@@ -1,10 +1,13 @@
 import { useMemo, useState } from 'react'
-import Plot from 'react-plotly.js'
+import createPlotlyComponent from 'react-plotly.js/factory'
+import Plotly from 'plotly.js-basic-dist'
 import type { PreviewResponse } from '../types'
 
 type Props = {
   preview?: PreviewResponse | null
 }
+
+const Plot = createPlotlyComponent(Plotly)
 
 export default function ChartPanel({ preview }: Props) {
   const columns = preview?.columns ?? []
