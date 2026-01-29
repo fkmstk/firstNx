@@ -15,7 +15,7 @@ from .jobs import create_job, get_job, start_job
 from .models import (
     AnalysisRequest,
     AnomalyRequest,
-    DatasetMeta,
+    DatasetMetaPublic,
     JobStatus,
     PipelineRunRequest,
 )
@@ -30,7 +30,7 @@ app.add_middleware(
     allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 
@@ -39,8 +39,8 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-@app.post("/api/upload", response_model=DatasetMeta)
-def upload_csv(file: UploadFile = File(...)) -> DatasetMeta:
+@app.post("/api/upload", response_model=DatasetMetaPublic)
+def upload_csv(file: UploadFile = File(...)) -> DatasetMetaPublic:
     if not file.filename:
         raise HTTPException(status_code=400, detail="ファイル名が不正です")
     ensure_data_dir()
@@ -53,8 +53,8 @@ def upload_csv(file: UploadFile = File(...)) -> DatasetMeta:
     return add_dataset(filename, path)
 
 
-@app.get("/api/datasets", response_model=list[DatasetMeta])
-def get_datasets() -> list[DatasetMeta]:
+@app.get("/api/datasets", response_model=list[DatasetMetaPublic])
+def get_datasets() -> list[DatasetMetaPublic]:
     return list_datasets()
 
 

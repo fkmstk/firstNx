@@ -6,7 +6,6 @@ export type ColumnInfo = {
 export type DatasetMeta = {
   id: string
   filename: string
-  path: string
   row_count?: number | null
   columns: ColumnInfo[]
 }

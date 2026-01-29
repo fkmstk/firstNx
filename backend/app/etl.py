@@ -22,7 +22,9 @@ def _parse_filter(expr: str) -> tuple[str, str, Any]:
         raise ValueError("Invalid filter expression")
     column, op, raw = match.groups()
     raw = raw.strip()
-    if (raw.startswith("\"") and raw.endswith("\"")) or (raw.startswith("'") and raw.endswith("'")):
+    if (raw.startswith('"') and raw.endswith('"')) or (
+        raw.startswith("'") and raw.endswith("'")
+    ):
         value: Any = raw[1:-1]
     else:
         try:
@@ -89,8 +91,12 @@ def _apply_join(
     right_path = dataset_lookup(step.right_id)
     right = pl.scan_csv(right_path)
 
-    left = left.with_columns(pl.col(step.left_time_col).cast(pl.Datetime("ms")).alias(step.left_time_col))
-    right = right.with_columns(pl.col(step.right_time_col).cast(pl.Datetime("ms")).alias(step.right_time_col))
+    left = left.with_columns(
+        pl.col(step.left_time_col).cast(pl.Datetime("ms")).alias(step.left_time_col)
+    )
+    right = right.with_columns(
+        pl.col(step.right_time_col).cast(pl.Datetime("ms")).alias(step.right_time_col)
+    )
 
     left = left.sort(step.left_time_col)
     right = right.sort(step.right_time_col)
@@ -108,7 +114,9 @@ def _apply_join(
     )
 
 
-def apply_step(lf: pl.LazyFrame, step: PipelineStep, dataset_lookup: DatasetLookup) -> pl.LazyFrame:
+def apply_step(
+    lf: pl.LazyFrame, step: PipelineStep, dataset_lookup: DatasetLookup
+) -> pl.LazyFrame:
     if isinstance(step, JoinStep):
         return _apply_join(lf, step, dataset_lookup)
     if isinstance(step, ImputeStep):

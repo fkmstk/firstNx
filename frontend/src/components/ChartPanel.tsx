@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import createPlotlyComponent from 'react-plotly.js/factory'
 import Plotly from 'plotly.js-basic-dist'
 import type { PreviewResponse } from '../types'
@@ -15,6 +15,19 @@ export default function ChartPanel({ preview }: Props) {
   const [yKey, setYKey] = useState<string>(columns[1] ?? '')
 
   const rows = preview?.rows ?? []
+
+  useEffect(() => {
+    if (columns.length === 0) {
+      setXKey('')
+      setYKey('')
+      return
+    }
+    setXKey((prev) => (prev && columns.includes(prev) ? prev : columns[0] ?? ''))
+    setYKey((prev) => {
+      if (prev && columns.includes(prev)) return prev
+      return columns[1] ?? columns[0] ?? ''
+    })
+  }, [columns])
 
   const plotData = useMemo(() => {
     if (!xKey || !yKey) return []

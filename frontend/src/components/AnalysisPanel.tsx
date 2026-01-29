@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getAnomaly, getCorrelation } from '../api/client'
 import type { AnomalyResult, CorrelationResult } from '../types'
 
@@ -16,6 +16,17 @@ export default function AnalysisPanel({ datasetId, columns }: Props) {
   const [anomalyResult, setAnomalyResult] = useState<AnomalyResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setCorrInput('')
+    setCorrResult(null)
+    setAnomTime('')
+    setAnomValue('')
+    setContamination('0.05')
+    setAnomalyResult(null)
+    setError(null)
+    setLoading(false)
+  }, [datasetId])
 
   const runCorrelation = async () => {
     if (!datasetId) return

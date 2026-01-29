@@ -19,7 +19,7 @@ def upload_csv(tmp_path):
     settings.data_dir = str(tmp_path)
     storage.ensure_data_dir()
     content = "time,value,other\n" + "\n".join(
-        f"2024-01-01T00:00:{i:02d},{i},{i*2}" for i in range(1, 11)
+        f"2024-01-01T00:00:{i:02d},{i},{i * 2}" for i in range(1, 11)
     )
     file_obj = io.BytesIO(content.encode("utf-8"))
     response = client.post(
@@ -56,9 +56,7 @@ def test_pipeline_run(tmp_path):
     dataset = upload_csv(tmp_path)
     request = {
         "dataset_id": dataset["id"],
-        "steps": [
-            {"type": "select", "columns": ["time", "value"]}
-        ],
+        "steps": [{"type": "select", "columns": ["time", "value"]}],
     }
     res = client.post("/api/pipeline/run", json=request)
     assert res.status_code == 200

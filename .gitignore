@@ -42,6 +42,12 @@ pnpm-debug.log*
 /data/*.parquet
 /data/*.feather
 /data/*.arrow
+/backend/data/*.csv
+/backend/data/*.tsv
+/backend/data/*.jsonl
+/backend/data/*.parquet
+/backend/data/*.feather
+/backend/data/*.arrow
 
 # OS
 .DS_Store

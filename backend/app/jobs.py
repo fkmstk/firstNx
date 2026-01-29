@@ -26,8 +26,14 @@ def get_job(job_id: str) -> JobStatus | None:
         return _jobs.get(job_id)
 
 
-def _update_job(job_id: str, *, status: str | None = None, progress: float | None = None,
-                message: Optional[str] = None, result: dict | None = None) -> None:
+def _update_job(
+    job_id: str,
+    *,
+    status: str | None = None,
+    progress: float | None = None,
+    message: Optional[str] = None,
+    result: dict | None = None,
+) -> None:
     with _lock:
         job = _jobs.get(job_id)
         if not job:
@@ -45,13 +51,17 @@ def _update_job(job_id: str, *, status: str | None = None, progress: float | Non
 def start_job(job_id: str, runner: JobRunner) -> None:
     def _run() -> None:
         try:
-            _update_job(job_id, status="running", progress=0.05, message="処理を開始しました")
+            _update_job(
+                job_id, status="running", progress=0.05, message="処理を開始しました"
+            )
 
             def progress_cb(p: float, msg: Optional[str] = None) -> None:
                 _update_job(job_id, progress=p, message=msg)
 
             result = runner(progress_cb)
-            _update_job(job_id, status="done", progress=1.0, message="完了", result=result)
+            _update_job(
+                job_id, status="done", progress=1.0, message="完了", result=result
+            )
         except Exception as exc:  # noqa: BLE001
             _update_job(job_id, status="error", progress=1.0, message=str(exc))
 

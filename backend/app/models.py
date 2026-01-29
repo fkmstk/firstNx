@@ -17,6 +17,13 @@ class DatasetMeta(BaseModel):
     columns: list[ColumnInfo]
 
 
+class DatasetMetaPublic(BaseModel):
+    id: str
+    filename: str
+    row_count: Optional[int] = None
+    columns: list[ColumnInfo]
+
+
 class JoinStep(BaseModel):
     type: Literal["join"] = "join"
     left_id: Optional[str] = None
