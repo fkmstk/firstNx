@@ -59,56 +59,58 @@ export default function AnalysisPanel({ datasetId, columns }: Props) {
   }
 
   return (
-    <div>
+    <>
       <h3>分析</h3>
       {!datasetId && <p className="text-muted">データセットを選択してください。</p>}
       {datasetId && (
-        <div className="grid two">
-          <div>
-            <label>
-              相関（列をカンマ区切り）
-              <input
-                value={corrInput}
-                onChange={(e) => setCorrInput(e.target.value)}
-                placeholder={columns.slice(0, 3).join(', ')}
-              />
-            </label>
-            <button type="button" className="secondary" onClick={runCorrelation} disabled={loading}>
-              相関を計算
-            </button>
-            {corrResult && (
-              <div className="result-output mt-sm">
-                <div><span className="text-accent">columns:</span> {corrResult.columns.join(', ')}</div>
-                <div><span className="text-accent">matrix:</span> {JSON.stringify(corrResult.matrix)}</div>
-              </div>
-            )}
-          </div>
-          <div>
-            <label>
-              異常検知（時間列）
-              <input value={anomTime} onChange={(e) => setAnomTime(e.target.value)} />
-            </label>
-            <label>
-              異常検知（値列）
-              <input value={anomValue} onChange={(e) => setAnomValue(e.target.value)} />
-            </label>
-            <label>
-              contamination
-              <input value={contamination} onChange={(e) => setContamination(e.target.value)} />
-            </label>
-            <button type="button" className="secondary" onClick={runAnomaly} disabled={loading}>
-              異常検知を実行
-            </button>
-            {anomalyResult && (
-              <div className="result-output mt-sm">
-                <div><span className="text-accent">threshold:</span> {anomalyResult.threshold}</div>
-                <div><span className="text-accent">points:</span> {anomalyResult.points.length}</div>
-              </div>
-            )}
+        <div className="analysis-content">
+          <div className="grid two">
+            <div className="analysis-section">
+              <label>
+                相関（列をカンマ区切り）
+                <input
+                  value={corrInput}
+                  onChange={(e) => setCorrInput(e.target.value)}
+                  placeholder={columns.slice(0, 3).join(', ')}
+                />
+              </label>
+              <button type="button" className="secondary" onClick={runCorrelation} disabled={loading}>
+                相関を計算
+              </button>
+              {corrResult && (
+                <div className="result-output mt-sm">
+                  <div><span className="text-accent">columns:</span> {corrResult.columns.join(', ')}</div>
+                  <div><span className="text-accent">matrix:</span> {JSON.stringify(corrResult.matrix)}</div>
+                </div>
+              )}
+            </div>
+            <div className="analysis-section">
+              <label>
+                異常検知（時間列）
+                <input value={anomTime} onChange={(e) => setAnomTime(e.target.value)} />
+              </label>
+              <label>
+                異常検知（値列）
+                <input value={anomValue} onChange={(e) => setAnomValue(e.target.value)} />
+              </label>
+              <label>
+                contamination
+                <input value={contamination} onChange={(e) => setContamination(e.target.value)} />
+              </label>
+              <button type="button" className="secondary" onClick={runAnomaly} disabled={loading}>
+                異常検知を実行
+              </button>
+              {anomalyResult && (
+                <div className="result-output mt-sm">
+                  <div><span className="text-accent">threshold:</span> {anomalyResult.threshold}</div>
+                  <div><span className="text-accent">points:</span> {anomalyResult.points.length}</div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
       {error && <p className="error-text">{error}</p>}
-    </div>
+    </>
   )
 }

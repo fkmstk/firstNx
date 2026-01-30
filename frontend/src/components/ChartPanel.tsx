@@ -50,9 +50,9 @@ export default function ChartPanel({ preview }: Props) {
   }
 
   return (
-    <div>
+    <>
       <h3>時系列可視化</h3>
-      <div className="grid two">
+      <div className="grid two" style={{ marginBottom: 8 }}>
         <label>
           X軸
           <select value={xKey} onChange={(e) => setXKey(e.target.value)}>
@@ -76,32 +76,33 @@ export default function ChartPanel({ preview }: Props) {
           </select>
         </label>
       </div>
-      <div style={{ marginTop: 12 }}>
+      <div className="chart-container">
         <Plot
           data={plotData}
           layout={{
-            height: 320,
-            margin: { l: 50, r: 20, t: 20, b: 50 },
+            autosize: true,
+            margin: { l: 40, r: 10, t: 10, b: 30 },
             paper_bgcolor: 'rgba(0,0,0,0)',
             plot_bgcolor: 'rgba(30,30,30,0.5)',
-            font: { family: 'Space Mono, monospace', color: '#e8e4dc' },
+            font: { family: 'Space Mono, monospace', color: '#e8e4dc', size: 9 },
             xaxis: {
               gridcolor: '#2a2a2a',
               linecolor: '#2a2a2a',
-              tickfont: { size: 10, color: '#6b6b6b' },
+              tickfont: { size: 9, color: '#6b6b6b' },
               zerolinecolor: '#3d3d3d',
             },
             yaxis: {
               gridcolor: '#2a2a2a',
               linecolor: '#2a2a2a',
-              tickfont: { size: 10, color: '#6b6b6b' },
+              tickfont: { size: 9, color: '#6b6b6b' },
               zerolinecolor: '#3d3d3d',
             },
           }}
-          config={{ displayModeBar: false }}
-          style={{ width: '100%' }}
+          config={{ displayModeBar: false, responsive: true }}
+          style={{ width: '100%', height: '100%' }}
+          useResizeHandler={true}
         />
       </div>
-    </div>
+    </>
   )
 }

@@ -11,7 +11,7 @@ export default function PreviewTable({ preview, title }: Props) {
   }
 
   return (
-    <div>
+    <>
       {title && <h3>{title}</h3>}
       <div className="table-wrap">
         <table>
@@ -33,6 +33,6 @@ export default function PreviewTable({ preview, title }: Props) {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   )
 }

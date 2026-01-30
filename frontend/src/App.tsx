@@ -113,46 +113,48 @@ export default function App() {
 
       {error && <div className="error-message">{error}</div>}
 
-      <div className="grid two">
-        <div className="card">
-          <UploadPanel onUpload={handleUpload} busy={loading} />
-          <div style={{ marginTop: 12 }}>
-            <DatasetList
-              datasets={datasets}
-              selectedId={selectedDatasetId}
-              onSelect={(id) => {
-                setSelectedDatasetId(id)
-                setJobPreview(null)
-              }}
-            />
+      <div className="main-grid">
+        <div className="grid two">
+          <div className="card">
+            <UploadPanel onUpload={handleUpload} busy={loading} />
+            <div className="card-content">
+              <DatasetList
+                datasets={datasets}
+                selectedId={selectedDatasetId}
+                onSelect={(id) => {
+                  setSelectedDatasetId(id)
+                  setJobPreview(null)
+                }}
+              />
+            </div>
+          </div>
+          <div className="card">
+            <PreviewTable title="入力プレビュー" preview={preview} />
           </div>
         </div>
-        <div className="card">
-          <PreviewTable title="入力プレビュー" preview={preview} />
-        </div>
-      </div>
 
-      <div className="grid two" style={{ marginTop: 16 }}>
-        <div className="card">
-          <StepEditor datasets={datasets} onAdd={addStep} />
-          <div style={{ marginTop: 12 }}>
-            <StepList steps={steps} onRemove={removeStep} />
+        <div className="grid two">
+          <div className="card">
+            <StepEditor datasets={datasets} onAdd={addStep} />
+            <div className="card-content">
+              <StepList steps={steps} onRemove={removeStep} />
+            </div>
+          </div>
+          <div className="card">
+            <RunPanel job={job} onRun={handleRun} onDownload={() => job && downloadJobResult(job.id)} />
+            <div className="card-content">
+              <PreviewTable title="結果プレビュー" preview={jobPreview} />
+            </div>
           </div>
         </div>
-        <div className="card">
-          <RunPanel job={job} onRun={handleRun} onDownload={() => job && downloadJobResult(job.id)} />
-          <div style={{ marginTop: 12 }}>
-            <PreviewTable title="結果プレビュー" preview={jobPreview} />
-          </div>
-        </div>
-      </div>
 
-      <div className="grid two" style={{ marginTop: 16 }}>
-        <div className="card">
-          <ChartPanel preview={chartPreview} />
-        </div>
-        <div className="card">
-          <AnalysisPanel datasetId={selectedDatasetId} columns={preview?.columns ?? []} />
+        <div className="grid two">
+          <div className="card">
+            <ChartPanel preview={chartPreview} />
+          </div>
+          <div className="card">
+            <AnalysisPanel datasetId={selectedDatasetId} columns={preview?.columns ?? []} />
+          </div>
         </div>
       </div>
     </div>
