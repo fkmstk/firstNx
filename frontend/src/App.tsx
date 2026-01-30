@@ -105,15 +105,13 @@ export default function App() {
     <div className="container">
       <div className="header">
         <div>
-          <h1 style={{ margin: 0 }}>ETL Tool</h1>
-          <p style={{ margin: 0, fontSize: 13, color: '#6b7280' }}>
-            CSVの前処理と分析をローカルで高速に行う
-          </p>
+          <h1>ETL TOOL</h1>
+          <p>CSVの前処理と分析をローカルで高速に行う</p>
         </div>
         <span className="badge">ローカルモード</span>
       </div>
 
-      {error && <div style={{ color: '#b91c1c', marginBottom: 8 }}>{error}</div>}
+      {error && <div className="error-message">{error}</div>}
 
       <div className="grid two">
         <div className="card">

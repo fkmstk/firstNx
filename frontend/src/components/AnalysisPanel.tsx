@@ -61,7 +61,7 @@ export default function AnalysisPanel({ datasetId, columns }: Props) {
   return (
     <div>
       <h3>分析</h3>
-      {!datasetId && <p style={{ fontSize: 13 }}>データセットを選択してください。</p>}
+      {!datasetId && <p className="text-muted">データセットを選択してください。</p>}
       {datasetId && (
         <div className="grid two">
           <div>
@@ -77,9 +77,9 @@ export default function AnalysisPanel({ datasetId, columns }: Props) {
               相関を計算
             </button>
             {corrResult && (
-              <div style={{ marginTop: 8, fontSize: 12 }}>
-                <div>columns: {corrResult.columns.join(', ')}</div>
-                <div>matrix: {JSON.stringify(corrResult.matrix)}</div>
+              <div className="result-output mt-sm">
+                <div><span className="text-accent">columns:</span> {corrResult.columns.join(', ')}</div>
+                <div><span className="text-accent">matrix:</span> {JSON.stringify(corrResult.matrix)}</div>
               </div>
             )}
           </div>
@@ -100,15 +100,15 @@ export default function AnalysisPanel({ datasetId, columns }: Props) {
               異常検知を実行
             </button>
             {anomalyResult && (
-              <div style={{ marginTop: 8, fontSize: 12 }}>
-                <div>threshold: {anomalyResult.threshold}</div>
-                <div>points: {anomalyResult.points.length}</div>
+              <div className="result-output mt-sm">
+                <div><span className="text-accent">threshold:</span> {anomalyResult.threshold}</div>
+                <div><span className="text-accent">points:</span> {anomalyResult.points.length}</div>
               </div>
             )}
           </div>
         </div>
       )}
-      {error && <p style={{ color: '#b91c1c', fontSize: 12 }}>{error}</p>}
+      {error && <p className="error-text">{error}</p>}
     </div>
   )
 }

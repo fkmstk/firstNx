@@ -7,7 +7,7 @@ type Props = {
 
 export default function PreviewTable({ preview, title }: Props) {
   if (!preview) {
-    return <p style={{ fontSize: 13 }}>プレビューがありません。</p>
+    return <p className="text-muted">プレビューがありません。</p>
   }
 
   return (

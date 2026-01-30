@@ -30,7 +30,7 @@ export default function UploadPanel({ onUpload, busy }: Props) {
       }}
     >
       <p>CSVをドラッグ&ドロップ</p>
-      <p style={{ fontSize: 12, color: '#6b7280' }}>またはファイル選択</p>
+      <p className="text-muted">またはファイル選択</p>
       <button
         type="button"
         className="secondary"

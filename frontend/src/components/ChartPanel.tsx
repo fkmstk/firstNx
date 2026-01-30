@@ -39,13 +39,14 @@ export default function ChartPanel({ preview }: Props) {
         y,
         type: 'scatter',
         mode: 'lines+markers',
-        marker: { color: '#2563eb' },
+        marker: { color: '#ff4d00', size: 6 },
+        line: { color: '#ff4d00', width: 2 },
       },
     ]
   }, [rows, xKey, yKey])
 
   if (!preview) {
-    return <p style={{ fontSize: 13 }}>可視化するデータがありません。</p>
+    return <p className="text-muted">可視化するデータがありません。</p>
   }
 
   return (
@@ -80,9 +81,22 @@ export default function ChartPanel({ preview }: Props) {
           data={plotData}
           layout={{
             height: 320,
-            margin: { l: 40, r: 20, t: 20, b: 40 },
+            margin: { l: 50, r: 20, t: 20, b: 50 },
             paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(30,30,30,0.5)',
+            font: { family: 'Space Mono, monospace', color: '#e8e4dc' },
+            xaxis: {
+              gridcolor: '#2a2a2a',
+              linecolor: '#2a2a2a',
+              tickfont: { size: 10, color: '#6b6b6b' },
+              zerolinecolor: '#3d3d3d',
+            },
+            yaxis: {
+              gridcolor: '#2a2a2a',
+              linecolor: '#2a2a2a',
+              tickfont: { size: 10, color: '#6b6b6b' },
+              zerolinecolor: '#3d3d3d',
+            },
           }}
           config={{ displayModeBar: false }}
           style={{ width: '100%' }}
