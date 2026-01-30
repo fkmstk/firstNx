@@ -4,6 +4,7 @@ import os
 import shutil
 import sys
 import threading
+import subprocess
 import uuid
 import webbrowser
 from pathlib import Path
@@ -183,6 +184,17 @@ if frontend_dist:
 _browser_opened = False
 
 
+def _open_url(url: str) -> None:
+    if sys.platform == "darwin":
+        browser = os.getenv("FIRSTNX_BROWSER", "Safari")
+        try:
+            subprocess.Popen(["open", "-a", browser, url])
+            return
+        except Exception:
+            pass
+    webbrowser.open(url)
+
+
 @app.on_event("startup")
 def _open_browser_on_startup() -> None:
     global _browser_opened
@@ -196,4 +208,4 @@ def _open_browser_on_startup() -> None:
         host = "127.0.0.1"
     url = f"http://{host}:{port}"
     _browser_opened = True
-    threading.Timer(0.5, lambda: webbrowser.open(url)).start()
+    threading.Timer(0.5, lambda: _open_url(url)).start()
