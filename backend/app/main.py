@@ -3,7 +3,9 @@ from __future__ import annotations
 import os
 import shutil
 import sys
+import threading
 import uuid
+import webbrowser
 from pathlib import Path
 from typing import Any
 
@@ -176,3 +178,22 @@ def anomaly(request: AnomalyRequest) -> dict[str, Any]:
 frontend_dist = _resolve_frontend_dist()
 if frontend_dist:
     app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="static")
+
+
+_browser_opened = False
+
+
+@app.on_event("startup")
+def _open_browser_on_startup() -> None:
+    global _browser_opened
+    if _browser_opened:
+        return
+    if os.getenv("FIRSTNX_OPEN_BROWSER", "1") != "1":
+        return
+    host = os.getenv("FIRSTNX_HOST", "127.0.0.1")
+    port = os.getenv("FIRSTNX_PORT", "8000")
+    if host in {"0.0.0.0", "::"}:
+        host = "127.0.0.1"
+    url = f"http://{host}:{port}"
+    _browser_opened = True
+    threading.Timer(0.5, lambda: webbrowser.open(url)).start()
