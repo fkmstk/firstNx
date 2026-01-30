@@ -27,6 +27,22 @@ pnpm dev
 - フロント: http://localhost:5173
 - バック: http://localhost:8000
 
+## macOS onefileビルド（バックエンド）
+```bash
+cd frontend
+pnpm install
+pnpm build
+
+cd backend
+uv venv
+uv pip install -r requirements.txt -r requirements-build.txt
+./scripts/build_macos_onefile.sh
+```
+
+- 生成物: `backend/dist/firstNx.app`
+- 起動: Finderからダブルクリックで起動
+- 停止: アクティビティモニタで `firstNx` を終了
+
 ## 主要機能（MVP）
 - CSVアップロード & プレビュー
 - 時系列結合 / 欠損処理 / フィルタ / 列選択

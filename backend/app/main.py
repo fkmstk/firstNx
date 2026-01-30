@@ -2,12 +2,15 @@ from __future__ import annotations
 
 import os
 import shutil
+import sys
 import uuid
+from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from .analysis import compute_correlation, detect_anomalies
 from .etl import preview_csv, run_pipeline
@@ -33,6 +36,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+def _resolve_frontend_dist() -> Path | None:
+    if getattr(sys, "frozen", False):
+        dist_dir = Path(sys._MEIPASS) / "frontend_dist"
+    else:
+        dist_dir = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+    return dist_dir if dist_dir.exists() else None
+
 
 def _to_public(meta: DatasetMeta) -> DatasetMetaPublic:
     return DatasetMetaPublic(
@@ -159,3 +171,8 @@ def anomaly(request: AnomalyRequest) -> dict[str, Any]:
         request.value_col,
         request.contamination,
     )
+
+
+frontend_dist = _resolve_frontend_dist()
+if frontend_dist:
+    app.mount("/", StaticFiles(directory=str(frontend_dist), html=True), name="static")
