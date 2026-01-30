@@ -42,6 +42,7 @@ uv pip install -r requirements.txt -r requirements-build.txt
 - 生成物: `backend/dist/firstNx.app`
 - 起動: Finderからダブルクリックで起動
 - 停止: アクティビティモニタで `firstNx` を終了
+- ポート: 8000 が使用中の場合は空きポートを自動選択します（固定したい場合は `FIRSTNX_PORT=8001 backend/dist/firstNx.app/Contents/MacOS/firstNx` で起動）
 
 ## 主要機能（MVP）
 - CSVアップロード & プレビュー
