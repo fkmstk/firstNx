@@ -1,14 +1,18 @@
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import Any, Callable, cast
 
 import numpy as np
 import polars as pl
 from sklearn.ensemble import IsolationForest
 
 
+ScanCsv = Callable[..., pl.LazyFrame]
+scan_csv = cast(ScanCsv, pl.scan_csv)
+
+
 def compute_correlation(path: str, columns: list[str]) -> dict[str, Any]:
-    df = pl.scan_csv(source=path).select(columns).collect()
+    df = scan_csv(path).select(columns).collect()
     corr = df.corr()
     return {
         "columns": corr.columns,
@@ -22,7 +26,7 @@ def detect_anomalies(
     value_col: str,
     contamination: float,
 ) -> dict[str, Any]:
-    df = pl.scan_csv(source=path).select([time_col, value_col]).collect()
+    df = scan_csv(path).select([time_col, value_col]).collect()
     pdf = df.to_pandas()
     values = pdf[value_col].to_numpy().reshape(-1, 1)
 

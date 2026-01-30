@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 from datetime import timedelta
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 import polars as pl
 
@@ -10,10 +10,12 @@ from .models import FilterStep, ImputeStep, JoinStep, PipelineStep, SelectStep
 
 
 DatasetLookup = Callable[[str], str]
+ScanCsv = Callable[..., pl.LazyFrame]
+scan_csv = cast(ScanCsv, pl.scan_csv)
 
 
 def preview_csv(path: str, limit: int) -> dict[str, Any]:
-    df = pl.scan_csv(source=path).limit(limit).collect()
+    df = scan_csv(path).limit(limit).collect()
     return {"columns": df.columns, "rows": df.to_dicts()}
 
 
@@ -87,10 +89,10 @@ def _apply_join(
     left = current
     if step.left_id:
         left_path = dataset_lookup(step.left_id)
-        left = pl.scan_csv(source=left_path)
+        left = scan_csv(left_path)
 
     right_path = dataset_lookup(step.right_id)
-    right = pl.scan_csv(source=right_path)
+    right = scan_csv(right_path)
 
     left = left.with_columns(
         pl.col(step.left_time_col).cast(pl.Datetime("ms")).alias(step.left_time_col)
@@ -136,7 +138,7 @@ def run_pipeline(
     result_path: str,
     progress_cb,
 ) -> dict[str, Any]:
-    lf = pl.scan_csv(source=base_path)
+    lf = scan_csv(base_path)
     total = max(len(steps), 1)
     progress_cb(0.1, "パイプラインを開始")
 
