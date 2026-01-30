@@ -2,17 +2,19 @@ from __future__ import annotations
 
 import os
 import uuid
-from typing import Callable, Dict, cast
-
-import polars as pl
+from typing import Dict
 
 from .models import ColumnInfo, DatasetMeta
 from .settings import settings
 
 
 datasets: Dict[str, DatasetMeta] = {}
-ScanCsv = Callable[..., pl.LazyFrame]
-scan_csv = cast(ScanCsv, pl.scan_csv)
+
+
+def _scan_csv(path: str):
+    import polars as pl
+
+    return pl.scan_csv(path)
 
 
 def ensure_data_dir() -> str:
@@ -21,7 +23,7 @@ def ensure_data_dir() -> str:
 
 
 def _infer_schema(path: str) -> list[ColumnInfo]:
-    scan = scan_csv(path)
+    scan = _scan_csv(path)
     try:
         schema = scan.collect_schema()
     except AttributeError:

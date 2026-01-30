@@ -15,8 +15,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from .analysis import compute_correlation, detect_anomalies
-from .etl import preview_csv, run_pipeline
 from .jobs import create_job, get_job, start_job
 from .models import (
     AnalysisRequest,
@@ -84,6 +82,8 @@ def get_datasets() -> list[DatasetMetaPublic]:
 
 @app.get("/api/datasets/{dataset_id}/preview")
 def dataset_preview(dataset_id: str, limit: int = Query(None)) -> dict[str, Any]:
+    from .etl import preview_csv
+
     dataset = get_dataset(dataset_id)
     if not dataset:
         raise HTTPException(status_code=404, detail="Dataset not found")
@@ -93,6 +93,8 @@ def dataset_preview(dataset_id: str, limit: int = Query(None)) -> dict[str, Any]
 
 @app.post("/api/pipeline/run", response_model=JobStatus)
 def pipeline_run(request: PipelineRunRequest) -> JobStatus:
+    from .etl import run_pipeline
+
     dataset = get_dataset(request.dataset_id)
     if not dataset:
         raise HTTPException(status_code=404, detail="Dataset not found")
@@ -130,6 +132,8 @@ def job_status(job_id: str) -> JobStatus:
 
 @app.get("/api/jobs/{job_id}/result/preview")
 def job_result_preview(job_id: str, limit: int = Query(None)) -> dict[str, Any]:
+    from .etl import preview_csv
+
     job = get_job(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -157,6 +161,8 @@ def job_result_download(job_id: str) -> FileResponse:
 
 @app.post("/api/analysis/correlation")
 def correlation(request: AnalysisRequest) -> dict[str, Any]:
+    from .analysis import compute_correlation
+
     dataset = get_dataset(request.dataset_id)
     if not dataset:
         raise HTTPException(status_code=404, detail="Dataset not found")
@@ -165,6 +171,8 @@ def correlation(request: AnalysisRequest) -> dict[str, Any]:
 
 @app.post("/api/analysis/anomaly")
 def anomaly(request: AnomalyRequest) -> dict[str, Any]:
+    from .analysis import detect_anomalies
+
     dataset = get_dataset(request.dataset_id)
     if not dataset:
         raise HTTPException(status_code=404, detail="Dataset not found")

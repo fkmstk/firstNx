@@ -2,20 +2,30 @@ from __future__ import annotations
 
 import re
 from datetime import timedelta
-from typing import Any, Callable, cast
-
-import polars as pl
+from typing import Any, Callable, TYPE_CHECKING
 
 from .models import FilterStep, ImputeStep, JoinStep, PipelineStep, SelectStep
 
+if TYPE_CHECKING:
+    import polars as pl
+
 
 DatasetLookup = Callable[[str], str]
-ScanCsv = Callable[..., pl.LazyFrame]
-scan_csv = cast(ScanCsv, pl.scan_csv)
+
+
+def _pl():
+    import polars as pl
+
+    return pl
+
+
+def _scan_csv(path: str):
+    pl = _pl()
+    return pl.scan_csv(path)
 
 
 def preview_csv(path: str, limit: int) -> dict[str, Any]:
-    df = scan_csv(path).limit(limit).collect()
+    df = _scan_csv(path).limit(limit).collect()
     return {"columns": df.columns, "rows": df.to_dicts()}
 
 
@@ -41,6 +51,7 @@ def _parse_filter(expr: str) -> tuple[str, str, Any]:
 
 
 def _apply_filter(lf: pl.LazyFrame, step: FilterStep) -> pl.LazyFrame:
+    pl = _pl()
     column, op, value = _parse_filter(step.expr)
     col = pl.col(column)
     if op == "==":
@@ -61,6 +72,7 @@ def _apply_filter(lf: pl.LazyFrame, step: FilterStep) -> pl.LazyFrame:
 
 
 def _apply_impute(lf: pl.LazyFrame, step: ImputeStep) -> pl.LazyFrame:
+    pl = _pl()
     col = pl.col(step.column)
     if step.method == "ffill":
         expr = col.fill_null(strategy="forward")
@@ -86,13 +98,14 @@ def _apply_join(
     step: JoinStep,
     dataset_lookup: DatasetLookup,
 ) -> pl.LazyFrame:
+    pl = _pl()
     left = current
     if step.left_id:
         left_path = dataset_lookup(step.left_id)
-        left = scan_csv(left_path)
+        left = _scan_csv(left_path)
 
     right_path = dataset_lookup(step.right_id)
-    right = scan_csv(right_path)
+    right = _scan_csv(right_path)
 
     left = left.with_columns(
         pl.col(step.left_time_col).cast(pl.Datetime("ms")).alias(step.left_time_col)
@@ -138,7 +151,7 @@ def run_pipeline(
     result_path: str,
     progress_cb,
 ) -> dict[str, Any]:
-    lf = scan_csv(base_path)
+    lf = _scan_csv(base_path)
     total = max(len(steps), 1)
     progress_cb(0.1, "パイプラインを開始")
 

@@ -6,6 +6,7 @@ cd "$ROOT_DIR"
 
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 APP_NAME="${APP_NAME:-firstNx}"
+ONEFILE="${ONEFILE:-0}"
 
 dist_dir="$ROOT_DIR/dist"
 build_dir="$ROOT_DIR/build"
@@ -19,8 +20,13 @@ if [[ ! -d "$frontend_dist" ]]; then
   exit 1
 fi
 
+onefile_flag=()
+if [[ "$ONEFILE" == "1" ]]; then
+  onefile_flag=(--onefile)
+fi
+
 "$PYTHON_BIN" -m PyInstaller \
-  --onefile \
+  "${onefile_flag[@]}" \
   --windowed \
   --name "$APP_NAME" \
   --add-data "$frontend_dist:frontend_dist" \
