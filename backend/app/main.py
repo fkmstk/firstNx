@@ -7,6 +7,7 @@ import threading
 import subprocess
 import uuid
 import webbrowser
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
@@ -28,7 +29,13 @@ from .settings import settings
 from .storage import add_dataset, ensure_data_dir, get_dataset, list_datasets
 
 
-app = FastAPI(title="ETL Tool API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    _open_browser_on_startup()
+    yield
+
+
+app = FastAPI(title="ETL Tool API", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -203,7 +210,6 @@ def _open_url(url: str) -> None:
     webbrowser.open(url)
 
 
-@app.on_event("startup")
 def _open_browser_on_startup() -> None:
     global _browser_opened
     if _browser_opened:

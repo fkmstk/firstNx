@@ -16,6 +16,8 @@ htmlcov/
 *.egg-info/
 build/
 dist/
+.pyinstaller/
+*.spec
 .python-version
 .ipynb_checkpoints/
 .venv/

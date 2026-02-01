@@ -1,5 +1,7 @@
 import socket
 
+import pytest
+
 from app.run_server import _find_free_port
 
 
@@ -9,7 +11,11 @@ HOST = "127.0.0.1"
 def _reserve_port_with_room(room: int = 5):
     for _ in range(50):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind((HOST, 0))
+        try:
+            sock.bind((HOST, 0))
+        except PermissionError:
+            sock.close()
+            pytest.skip("Socket bind not permitted in this test environment")
         port = sock.getsockname()[1]
         if port <= 65535 - room:
             return sock, port
